@@ -14,7 +14,6 @@
     "rules": {
         "prettier/prettier": "error",
         "camelcase": ["error"],
-        "eqeqeq": ["error", "always"],
-        "object-shorthand": ["error", "always", { "ignoreConstructors": true }]
+        "eqeqeq": ["error", "always"]
     }
 }
