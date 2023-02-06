@@ -137,7 +137,7 @@ body {
 
 .time-box {
     height: 50px;
-    width: 100%;
+    width: 560px;
     display: flex;
     justify-content: space-around;
     align-items: center;
