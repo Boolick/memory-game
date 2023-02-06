@@ -25,6 +25,7 @@ body {
 
 .container {
     max-width: 1250px;
+    height: 100vh;
     padding: 0 15px;
     margin: 0 auto;
 }
@@ -36,10 +37,11 @@ body {
 }
 
 .game-section {
-    padding-top: 50px;
+    padding-top: 35px;
 }
 
 .game-section-container {
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,7 +63,7 @@ body {
 }
 
 .restart-btn {
-    max-width: 150px;
+    width: 246px;
     height: 50px;
     position: relative;
     font-size: 18px;
@@ -77,11 +79,10 @@ body {
     margin-bottom: 10px;
 }
 
-/* .game_menu__difficult-btn,
-.restart_btn {
-    padding: 15px 20px;
-    background-color: #5dc6ff;
-} */
+.restart-btn:hover {
+    background-color: #222;
+    color: #fff;
+}
 
 .game-menu-start-btn:hover {
     background-color: #222;
@@ -89,19 +90,17 @@ body {
 }
 
 .game-table {
-    max-width: 270px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    max-width: 560px;
+    display: grid;
+    grid-gap: 12px;
 }
 
 .game-card {
     width: 70px;
-    height: 164px;
+    height: 144px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: purple;
     border-radius: 5px;
     transition: all 0.3s linear;
     margin: 1%;
@@ -114,15 +113,17 @@ body {
     display: none;
 }
 
-.game-card img + img {
+.game-card img+img {
     width: 100%;
     height: 100%;
     border-radius: 5px;
     display: block;
+    transition: all 0.3s linear;
 }
 
 .game-card.flip {
     background: #5dc6ff;
+    transition: all 0.3s linear;
     transform: perspective(100px) rotateY(360deg);
 }
 
@@ -130,20 +131,33 @@ body {
     display: block;
 }
 
-.game-card.flip img + img {
+.game-card.flip img+img {
     display: none;
 }
 
-.game-card.matched {
-    background: #76db82 !important;
-}
-
-.game-card:hover {
-    background: #d1d1c0;
+.time-box {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
 .timer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 155px;
+    height: 50px;
+    font-weight: 400;
+    font-size: 42px;
     color: #fff;
+}
+
+span {
+    text-align: justify;
+    font-size: 12px;
 }
 
 .game-menu-title {
@@ -156,22 +170,22 @@ body {
 }
 
 .label {
-    align-items: center;
     background: #fff;
     border-radius: 12px;
     color: #0080c1;
     cursor: pointer;
-    display: flex;
-    font-size: 24px;
+    font-size: 42px;
     height: 98px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    position: relative;
     width: 98px;
-    transform: perspective(100px) rotateY(360deg);
 }
 
 .input[type="radio"] {
     opacity: 0;
+    cursor: pointer;
+    position: absolute;
 }
 
 .level-box {
