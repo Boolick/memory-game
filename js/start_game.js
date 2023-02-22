@@ -15,8 +15,12 @@ export const startGame = (difficult) => {
 
     const gameSection = document.querySelector(".game-section-container");
     const gameTable = document.createElement("div");
+    gameTable.style.gridTemplateColumns = `repeat(6,auto)`;
 
-    const timer = document.createElement("span");
+    const timeBox = document.createElement("div");
+    timeBox.classList.add("time-box");
+
+    const timer = document.createElement("div");
     timer.classList.add("timer");
 
     const cardsIcons = createIconsArray(difficult);
@@ -48,7 +52,7 @@ export const startGame = (difficult) => {
         //формат времени перед показом
         let secondsValue = seconds < 10 ? `0${seconds}` : seconds;
         let minutesValue = minutes < 10 ? `0${minutes}` : minutes;
-        timer.innerHTML = `<span>Time:</span>${minutesValue}:${secondsValue}`;
+        timer.innerHTML = `<span>min:</span>${minutesValue}<span>sec:</span>${secondsValue}`;
     };
 
     function resetBoard() {
@@ -64,28 +68,26 @@ export const startGame = (difficult) => {
     doubleCardsIcons.forEach((icon) =>
         gameTable.append(createFlippedCard(icon))
     );
-    gameSection.append(gameTable);
+    gameSection.append(timeBox, gameTable);
     console.log(doubleCardsIcons);
+    console.log(doubleCardsIcons.length);
 
     // Очищаем поле и заполняем картами, рубашками вверх
     setTimeout(() => {
         gameTable.innerHTML = "";
-
-        doubleCardsIcons.forEach((icon) =>
-            gameTable.append(createCard("./images,icons/Mask group.jpg", icon))
-        );
-
         //Запускаем таймер
         seconds = 0;
         minutes = 0;
         interval = setInterval(timeGenerator, 1000);
         //запускаем движения
         /* timer.innerHTML = `<span>Moves:</span> ${movesCount}`; */
-
-        gameSection.append(restartBtn, timer, gameTable);
-
+        timeBox.append(timer, restartBtn);
+        gameSection.appendChild(timeBox);
+        doubleCardsIcons.forEach((icon) =>
+            gameTable.append(createCard("./images,icons/Mask group.jpg", icon))
+        );
+        gameSection.append(gameTable);
         restartBtn.addEventListener("click", createGameMenu);
-
         const cards = document.querySelectorAll(".game-card");
         console.log(cards);
 
