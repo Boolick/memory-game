@@ -18,6 +18,53 @@ export const shuffleArray = (array) => {
     return array;
 };
 
+export const createLostScreen = () => {
+    const container = document.querySelector(".container");
+
+    const sad = document.createElement("img");
+    sad.classList.add("sadImg");
+    sad.setAttribute("src", "./static/sadImage.png");
+
+    const title = document.createElement("h2");
+    title.textContent = "Вы проиграли";
+    title.classList.add("game-lose-title");
+
+    const restartBtn = document.querySelector(".restart-btn");
+    const loseScreen = document.createElement("div");
+    loseScreen.classList.add("lose-screen");
+    const subtitle = document.createElement("h3");
+    subtitle.textContent = "Затраченное время:";
+    subtitle.classList.add("game-resulsts");
+    const time = document.querySelector(".timer");
+
+    loseScreen.append(sad, title, subtitle, time, restartBtn);
+
+    container.append(loseScreen);
+};
+export const createWinScreen = () => {
+    const container = document.querySelector(".container");
+
+    const sad = document.createElement("img");
+    sad.classList.add("winImg");
+    sad.setAttribute("src", "./static/winImage.png");
+
+    const title = document.createElement("h2");
+    title.textContent = "Вы выиграли";
+    title.classList.add("game-lose-title");
+
+    const restartBtn = document.querySelector(".restart-btn");
+    const loseScreen = document.createElement("div");
+    loseScreen.classList.add("lose-screen");
+    const subtitle = document.createElement("h3");
+    subtitle.textContent = "Затраченное время:";
+    subtitle.classList.add("game-resulsts");
+    const time = document.querySelector(".timer");
+
+    loseScreen.append(sad, title, subtitle, time, restartBtn);
+
+    container.append(loseScreen);
+};
+
 //Получаем массив вдресов для отрисовки игральных карт
 const cardsIcons = [];
 const HOST = `https://deckofcardsapi.com/api/deck/new/shuffle/?`;

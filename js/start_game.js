@@ -1,17 +1,19 @@
 import { createCard, createFlippedCard } from "./card.js";
 import { createGameMenu } from "./game_menu.js";
-import { createIconsArray, doubleArray, shuffleArray } from "./utils.js";
+
+import {
+    createIconsArray,
+    doubleArray,
+    shuffleArray,
+    createLostScreen,
+    createWinScreen
+} from "./utils.js";
 
 export const startGame = (difficult) => {
     let firstCard = false;
     let secondCard = false;
     let lockBoard = false;
-    // eslint-disable-next-line no-unused-vars
     let interval;
-
-    /*   document.createElement("div");
-    this.classList.add("result");
-    const result = document.querySelector(".result"); */
 
     const gameSection = document.querySelector(".game-section-container");
     const gameTable = document.createElement("div");
@@ -38,8 +40,6 @@ export const startGame = (difficult) => {
     //инициация таймера
     let seconds = 0,
         minutes = 0;
-    //инициация счетчика движений
-    //let movesCount = 0;
 
     //для таймера
     const timeGenerator = () => {
@@ -58,9 +58,14 @@ export const startGame = (difficult) => {
     function resetBoard() {
         let [tempFirst, tempSecond] = [firstCard, secondCard];
         [firstCard, secondCard] = [false, false];
+        lockBoard = true;
+        clearInterval(interval);
         setTimeout(() => {
             tempFirst.classList.remove("flip");
             tempSecond.classList.remove("flip");
+            setTimeout(() => {
+                createLostScreen();
+            }, 500);
         }, 900);
     }
 
@@ -75,21 +80,22 @@ export const startGame = (difficult) => {
     // Очищаем поле и заполняем картами, рубашками вверх
     setTimeout(() => {
         gameTable.innerHTML = "";
+
         //Запускаем таймер
         seconds = 0;
         minutes = 0;
         interval = setInterval(timeGenerator, 1000);
-        //запускаем движения
-        /* timer.innerHTML = `<span>Moves:</span> ${movesCount}`; */
+
         timeBox.append(timer, restartBtn);
-        gameSection.appendChild(timeBox);
+
         doubleCardsIcons.forEach((icon) =>
-            gameTable.append(createCard("./images,icons/Mask group.jpg", icon))
+            gameTable.append(createCard("./static/Mask group.jpg", icon))
         );
         gameSection.append(gameTable);
+
         restartBtn.addEventListener("click", createGameMenu);
+
         const cards = document.querySelectorAll(".game-card");
-        console.log(cards);
 
         let firstCardValue;
         // Создаем переворачивание карт
@@ -111,8 +117,6 @@ export const startGame = (difficult) => {
                         secondCard = card;
                         let secondCardValue = card.getAttribute("value");
 
-                        console.log(secondCardValue);
-                        console.log(firstCardValue);
                         if (firstCardValue === secondCardValue) {
                             firstCard.classList.add("matched");
                             secondCard.classList.add("matched");
@@ -120,10 +124,17 @@ export const startGame = (difficult) => {
                         } else {
                             // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
                             resetBoard();
-                            setTimeout(() => {
-                                alert("Вы проиграли");
-                            }, 350);
                         }
+                    }
+                    if (
+                        Array.from(cards).every((card) =>
+                            card.className.includes("flip")
+                        )
+                    ) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            createWinScreen();
+                        }, 1000);
                     }
                 }
             });
