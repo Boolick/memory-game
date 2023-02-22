@@ -1,22 +1,30 @@
-import { createCard, createFlippedCard } from "./card.js";
-import { createGameMenu } from "./game_menu.js";
-import { createIconsArray, doubleArray, shuffleArray } from "./utils.js";
+import { createCard, createFlippedCard } from "./card";
+import { createGameMenu } from "./game_menu";
 
-export const startGame = (difficult) => {
-    let firstCard = false;
-    let secondCard = false;
+import {
+    createIconsArray,
+    doubleArray,
+    shuffleArray,
+    createLostScreen,
+    createWinScreen
+} from "./utils";
+
+export const startGame = (difficult: number) => {
+    let firstCard: Element | null = null;
+    let secondCard: Element | null = null;
     let lockBoard = false;
-    // eslint-disable-next-line no-unused-vars
-    let interval;
+    let interval: string | number | NodeJS.Timeout | undefined;
 
-    /*   document.createElement("div");
-    this.classList.add("result");
-    const result = document.querySelector(".result"); */
-
-    const gameSection = document.querySelector(".game-section-container");
+    const gameSection = document.querySelector(
+        ".game-section-container"
+    ) as HTMLElement;
     const gameTable = document.createElement("div");
+    gameTable.style.gridTemplateColumns = `repeat(6,auto)`;
 
-    const timer = document.createElement("span");
+    const timeBox = document.createElement("div");
+    timeBox.classList.add("time-box");
+
+    const timer = document.createElement("div");
     timer.classList.add("timer");
 
     const cardsIcons = createIconsArray(difficult);
@@ -34,8 +42,6 @@ export const startGame = (difficult) => {
     //инициация таймера
     let seconds = 0,
         minutes = 0;
-    //инициация счетчика движений
-    //let movesCount = 0;
 
     //для таймера
     const timeGenerator = () => {
@@ -48,48 +54,50 @@ export const startGame = (difficult) => {
         //формат времени перед показом
         let secondsValue = seconds < 10 ? `0${seconds}` : seconds;
         let minutesValue = minutes < 10 ? `0${minutes}` : minutes;
-        timer.innerHTML = `<span>Time:</span>${minutesValue}:${secondsValue}`;
+        timer.innerHTML = `<span>min:</span>${minutesValue}<span>sec:</span>${secondsValue}`;
     };
 
     function resetBoard() {
-        let [tempFirst, tempSecond] = [firstCard, secondCard];
-        [firstCard, secondCard] = [false, false];
+        let [tempFirst, tempSecond]: any = [firstCard, secondCard];
+        [firstCard, secondCard] = [null, null];
+        lockBoard = true;
+        clearInterval(interval);
         setTimeout(() => {
             tempFirst.classList.remove("flip");
             tempSecond.classList.remove("flip");
+            setTimeout(() => {
+                createLostScreen();
+            }, 500);
         }, 900);
     }
 
     // Показываем перевернутые карты на 5сек
-    doubleCardsIcons.forEach((icon) =>
+    doubleCardsIcons.forEach((icon: any) =>
         gameTable.append(createFlippedCard(icon))
     );
-    gameSection.append(gameTable);
-    console.log(doubleCardsIcons);
+    gameSection.append(timeBox, gameTable);
 
     // Очищаем поле и заполняем картами, рубашками вверх
     setTimeout(() => {
         gameTable.innerHTML = "";
 
-        doubleCardsIcons.forEach((icon) =>
-            gameTable.append(createCard("./images,icons/Mask group.jpg", icon))
-        );
-
         //Запускаем таймер
         seconds = 0;
         minutes = 0;
         interval = setInterval(timeGenerator, 1000);
-        //запускаем движения
-        /* timer.innerHTML = `<span>Moves:</span> ${movesCount}`; */
 
-        gameSection.append(restartBtn, timer, gameTable);
+        timeBox.append(timer, restartBtn);
+
+        doubleCardsIcons.forEach((icon: any) =>
+            gameTable.append(createCard("./static/Mask group.jpg", icon))
+        );
+        gameSection.append(gameTable);
 
         restartBtn.addEventListener("click", createGameMenu);
 
         const cards = document.querySelectorAll(".game-card");
-        console.log(cards);
 
-        let firstCardValue;
+        let firstCardValue: string | null;
         // Создаем переворачивание карт
         cards.forEach((card) => {
             card.addEventListener("click", () => {
@@ -109,19 +117,24 @@ export const startGame = (difficult) => {
                         secondCard = card;
                         let secondCardValue = card.getAttribute("value");
 
-                        console.log(secondCardValue);
-                        console.log(firstCardValue);
                         if (firstCardValue === secondCardValue) {
                             firstCard.classList.add("matched");
                             secondCard.classList.add("matched");
-                            firstCard = false;
+                            firstCard = null;
                         } else {
                             // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
                             resetBoard();
-                            setTimeout(() => {
-                                alert("Вы проиграли");
-                            }, 350);
                         }
+                    }
+                    if (
+                        Array.from(cards).every((card) =>
+                            card.className.includes("flip")
+                        )
+                    ) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            createWinScreen();
+                        }, 1000);
                     }
                 }
             });

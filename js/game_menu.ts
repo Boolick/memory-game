@@ -1,13 +1,17 @@
-import { startGame } from "./start_game.js";
-export const createGameMenu = () => {
-    const gameSection = document.querySelector(".game-section-container");
-    gameSection.innerHTML = "";
-    const title = document.createElement("h2");
+import { startGame } from "./start_game";
 
+export const createGameMenu = () => {
+    const gameSection = document.querySelector(
+        ".game-section-container"
+    ) as HTMLElement;
+    gameSection.innerHTML = "";
+
+    const title = document.createElement("h2");
     title.textContent = "Выбери сложность";
     title.classList.add("game-menu-title");
     const dificultRadioButtons = document.createElement("div");
     dificultRadioButtons.classList.add("level-box");
+
     const data = {
         1: false,
         2: false,
@@ -31,10 +35,11 @@ export const createGameMenu = () => {
     dificultRadioButtons.appendChild(title);
     dificultRadioButtons.appendChild(button);
     gameSection.append(dificultRadioButtons);
+
     // запускаем игровое поле
     button.addEventListener("click", function (e) {
-        const checked = document.querySelectorAll(".input");
-        console.log(checked);
+        const checked: any = document.querySelectorAll(".input");
+       
         if (checked[0].checked) {
             startGame(6);
         }
