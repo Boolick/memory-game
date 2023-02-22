@@ -1,4 +1,4 @@
-import { createGameMenu } from "./game_menu.js";
+import { createGameMenu } from "./game_menu";
 
 const cardsApp = () => {
     createGameMenu();

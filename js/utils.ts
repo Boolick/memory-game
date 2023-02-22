@@ -1,7 +1,12 @@
-export const doubleArray = (array) =>
-    array.reduce((res, current) => res.concat([current, current]), []);
 
-export const shuffleArray = (array) => {
+
+export const doubleArray = (array: any) =>
+    array.reduce(
+        (res: any[], current: any) => res.concat([current, current]),
+        []
+    );
+
+export const shuffleArray = (array: any[]) => {
     let currentIndex = array.length,
         randomIndex;
 
@@ -19,7 +24,7 @@ export const shuffleArray = (array) => {
 };
 
 export const createLostScreen = () => {
-    const container = document.querySelector(".container");
+    const container = document.querySelector(".container") as HTMLElement;
 
     const sad = document.createElement("img");
     sad.classList.add("sadImg");
@@ -29,20 +34,20 @@ export const createLostScreen = () => {
     title.textContent = "Вы проиграли";
     title.classList.add("game-lose-title");
 
-    const restartBtn = document.querySelector(".restart-btn");
+    const restartBtn = document.querySelector(".restart-btn") as HTMLElement;
     const loseScreen = document.createElement("div");
     loseScreen.classList.add("lose-screen");
     const subtitle = document.createElement("h3");
     subtitle.textContent = "Затраченное время:";
     subtitle.classList.add("game-resulsts");
-    const time = document.querySelector(".timer");
+    const time = document.querySelector(".timer") as HTMLElement;
 
     loseScreen.append(sad, title, subtitle, time, restartBtn);
 
     container.append(loseScreen);
 };
 export const createWinScreen = () => {
-    const container = document.querySelector(".container");
+    const container = document.querySelector(".container") as HTMLElement;
 
     const sad = document.createElement("img");
     sad.classList.add("winImg");
@@ -52,13 +57,13 @@ export const createWinScreen = () => {
     title.textContent = "Вы выиграли";
     title.classList.add("game-lose-title");
 
-    const restartBtn = document.querySelector(".restart-btn");
+    const restartBtn = document.querySelector(".restart-btn") as HTMLElement;
     const loseScreen = document.createElement("div");
     loseScreen.classList.add("lose-screen");
     const subtitle = document.createElement("h3");
     subtitle.textContent = "Затраченное время:";
     subtitle.classList.add("game-resulsts");
-    const time = document.querySelector(".timer");
+    const time = document.querySelector(".timer") as HTMLElement;
 
     loseScreen.append(sad, title, subtitle, time, restartBtn);
 
@@ -66,7 +71,7 @@ export const createWinScreen = () => {
 };
 
 //Получаем массив вдресов для отрисовки игральных карт
-const cardsIcons = [];
+const cardsIcons: any[] = [];
 const HOST = `https://deckofcardsapi.com/api/deck/new/shuffle/?`;
 // eslint-disable-next-line no-undef
 request({
@@ -75,7 +80,7 @@ request({
         deckCount: 1
     },
 
-    onSuccess: function e(response) {
+    onSuccess: function e(response: { deck_id: any }) {
         //получаем id колоды карт
 
         const deckId = response.deck_id;
@@ -88,8 +93,8 @@ request({
             url: `${deck}/draw/?count=52`,
             params: {},
 
-            onSuccess: (response) => {
-                const getCodes = (code) =>
+            onSuccess: (response: { cards: any[] }) => {
+                const getCodes = (code: string) =>
                     response.cards.map((card) => card[code]);
 
                 getCodes("image").forEach((i) => {
@@ -101,7 +106,7 @@ request({
 });
 
 //выбираем массив карт, количество карт в котором зависит от выбранного уровня сложности
-export const createIconsArray = (initialCount) => {
+export const createIconsArray = (initialCount: number) => {
     //debugger
 
     switch (initialCount) {

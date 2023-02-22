@@ -17,7 +17,11 @@ module.exports = {
         open: true,
         hot: true
     },
-    entry: ["@babel/polyfill", "./js/index.js"],
+    stats: {
+        children: true,
+        errorDetails: true
+    },
+    entry: ["@babel/polyfill", "./js/index.ts"],
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "bundle.js",
@@ -26,6 +30,11 @@ module.exports = {
 
     module: {
         rules: [
+            {
+                test: /\.ts$/,
+                use: "ts-loader",
+                exclude: /node_modules/
+            },
             {
                 test: /\.(c|sa|sc)css$/i,
                 use: [
@@ -54,6 +63,9 @@ module.exports = {
                 }
             }
         ]
+    },
+    resolve: {
+        extensions: [".tsx", ".ts", ".js"]
     },
     plugins: [
         new CopyPlugin({

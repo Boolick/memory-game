@@ -40,369 +40,6 @@ __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerat
 
 /***/ }),
 
-/***/ "./js/card.js":
-/*!********************!*\
-  !*** ./js/card.js ***!
-  \********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "createCard": () => (/* binding */ createCard),
-/* harmony export */   "createFlippedCard": () => (/* binding */ createFlippedCard)
-/* harmony export */ });
-//создаем карты для демонстрации в начале игры
-var createFlippedCard = function createFlippedCard(flipCardIcon) {
-  var card = document.createElement("img");
-  card.setAttribute("src", "".concat(flipCardIcon));
-  card.classList.add("game-card", "flip");
-  var flippedCardI = document.createElement("i");
-  flippedCardI.classList.add("img", "img-".concat(flipCardIcon));
-  card.append(flippedCardI);
-  return card;
-};
-//создаем карты для игры
-var createCard = function createCard(defaultIcon, flipCardIcon) {
-  var card = document.createElement("div");
-  card.classList.add("game-card");
-  card.setAttribute("value", "".concat(flipCardIcon).slice(-6, -4));
-  var flippedCardI = document.createElement("img");
-  var notFlippedCardI = document.createElement("img");
-  flippedCardI.classList.add("img");
-  notFlippedCardI.classList.add("img", "icon");
-  flippedCardI.setAttribute("src", "".concat(flipCardIcon));
-  notFlippedCardI.setAttribute("src", "".concat(defaultIcon));
-  card.append(flippedCardI, notFlippedCardI);
-  return card;
-};
-
-/***/ }),
-
-/***/ "./js/game_menu.js":
-/*!*************************!*\
-  !*** ./js/game_menu.js ***!
-  \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "createGameMenu": () => (/* binding */ createGameMenu)
-/* harmony export */ });
-/* harmony import */ var _start_game_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./start_game.js */ "./js/start_game.js");
-
-var createGameMenu = function createGameMenu() {
-  var gameSection = document.querySelector(".game-section-container");
-  gameSection.innerHTML = "";
-  var title = document.createElement("h2");
-  title.textContent = "Выбери сложность";
-  title.classList.add("game-menu-title");
-  var dificultRadioButtons = document.createElement("div");
-  dificultRadioButtons.classList.add("level-box");
-  var data = {
-    1: false,
-    2: false,
-    3: false
-  };
-  //создаем радиокнопки сложности
-  for (var i in data) {
-    var label = document.createElement("label");
-    label.classList.add("label");
-    label.innerText = i;
-    var input = document.createElement("input");
-    input.classList.add("input");
-    input.type = "radio";
-    input.name = "difficult";
-    label.appendChild(input);
-    dificultRadioButtons.appendChild(label);
-  }
-  var button = document.createElement("button");
-  button.classList.add("game-menu-start-btn");
-  button.textContent = "start";
-  dificultRadioButtons.appendChild(title);
-  dificultRadioButtons.appendChild(button);
-  gameSection.append(dificultRadioButtons);
-  var canvas = document.getElementsByTagName("canvas");
-  canvas.innerHTML = "";
-
-  // запускаем игровое поле
-  button.addEventListener("click", function (e) {
-    var checked = document.querySelectorAll(".input");
-    console.log(checked);
-    if (checked[0].checked) {
-      (0,_start_game_js__WEBPACK_IMPORTED_MODULE_0__.startGame)(6);
-    }
-    if (checked[1].checked) {
-      (0,_start_game_js__WEBPACK_IMPORTED_MODULE_0__.startGame)(9);
-    }
-    if (checked[2].checked) {
-      (0,_start_game_js__WEBPACK_IMPORTED_MODULE_0__.startGame)(12);
-    } else {
-      e.preventDefault();
-    }
-  });
-};
-
-/***/ }),
-
-/***/ "./js/start_game.js":
-/*!**************************!*\
-  !*** ./js/start_game.js ***!
-  \**************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "startGame": () => (/* binding */ startGame)
-/* harmony export */ });
-/* harmony import */ var _card_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./card.js */ "./js/card.js");
-/* harmony import */ var _game_menu_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./game_menu.js */ "./js/game_menu.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils.js */ "./js/utils.js");
-
-
-
-var startGame = function startGame(difficult) {
-  var firstCard = false;
-  var secondCard = false;
-  var lockBoard = false;
-  var interval;
-  var gameSection = document.querySelector(".game-section-container");
-  var gameTable = document.createElement("div");
-  gameTable.style.gridTemplateColumns = "repeat(6,auto)";
-  var timeBox = document.createElement("div");
-  timeBox.classList.add("time-box");
-  var timer = document.createElement("div");
-  timer.classList.add("timer");
-  var cardsIcons = (0,_utils_js__WEBPACK_IMPORTED_MODULE_2__.createIconsArray)(difficult);
-  var restartBtn = document.createElement("button");
-  var doubleCardsIcons = (0,_utils_js__WEBPACK_IMPORTED_MODULE_2__.doubleArray)(cardsIcons);
-  gameSection.innerHTML = "";
-  restartBtn.textContent = "Restart";
-  gameTable.classList.add("game-table");
-  restartBtn.classList.add("restart-btn");
-  (0,_utils_js__WEBPACK_IMPORTED_MODULE_2__.shuffleArray)(doubleCardsIcons);
-
-  //инициация таймера
-  var seconds = 0,
-    minutes = 0;
-
-  //для таймера
-  var timeGenerator = function timeGenerator() {
-    seconds += 1;
-    //минуты
-    if (seconds >= 60) {
-      minutes += 1;
-      seconds = 0;
-    }
-    //формат времени перед показом
-    var secondsValue = seconds < 10 ? "0".concat(seconds) : seconds;
-    var minutesValue = minutes < 10 ? "0".concat(minutes) : minutes;
-    timer.innerHTML = "<span>min:</span>".concat(minutesValue, "<span>sec:</span>").concat(secondsValue);
-  };
-  function resetBoard() {
-    var tempFirst = firstCard,
-      tempSecond = secondCard;
-    firstCard = false;
-    secondCard = false;
-    lockBoard = true;
-    clearInterval(interval);
-    setTimeout(function () {
-      tempFirst.classList.remove("flip");
-      tempSecond.classList.remove("flip");
-      setTimeout(function () {
-        (0,_utils_js__WEBPACK_IMPORTED_MODULE_2__.createLostScreen)();
-      }, 500);
-    }, 900);
-  }
-
-  // Показываем перевернутые карты на 5сек
-  doubleCardsIcons.forEach(function (icon) {
-    return gameTable.append((0,_card_js__WEBPACK_IMPORTED_MODULE_0__.createFlippedCard)(icon));
-  });
-  gameSection.append(timeBox, gameTable);
-  console.log(doubleCardsIcons);
-  console.log(doubleCardsIcons.length);
-
-  // Очищаем поле и заполняем картами, рубашками вверх
-  setTimeout(function () {
-    gameTable.innerHTML = "";
-
-    //Запускаем таймер
-    seconds = 0;
-    minutes = 0;
-    interval = setInterval(timeGenerator, 1000);
-    timeBox.append(timer, restartBtn);
-    doubleCardsIcons.forEach(function (icon) {
-      return gameTable.append((0,_card_js__WEBPACK_IMPORTED_MODULE_0__.createCard)("./static/Mask group.jpg", icon));
-    });
-    gameSection.append(gameTable);
-    restartBtn.addEventListener("click", _game_menu_js__WEBPACK_IMPORTED_MODULE_1__.createGameMenu);
-    var cards = document.querySelectorAll(".game-card");
-    var firstCardValue;
-    // Создаем переворачивание карт
-    cards.forEach(function (card) {
-      card.addEventListener("click", function () {
-        //Защита от двойного клика
-        if (lockBoard) return;
-        if (card === firstCard) return;
-        // проверка карт на совпадение
-        if (!card.classList.contains("matched")) {
-          card.classList.add("flip");
-          if (!firstCard) {
-            firstCard = card;
-            firstCardValue = card.getAttribute("value");
-            console.log(firstCardValue);
-          } else {
-            secondCard = card;
-            var secondCardValue = card.getAttribute("value");
-            if (firstCardValue === secondCardValue) {
-              firstCard.classList.add("matched");
-              secondCard.classList.add("matched");
-              firstCard = false;
-            } else {
-              // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
-              resetBoard();
-            }
-          }
-          if (Array.from(cards).every(function (card) {
-            return card.className.includes("flip");
-          })) {
-            clearInterval(interval);
-            setTimeout(function () {
-              (0,_utils_js__WEBPACK_IMPORTED_MODULE_2__.createWinScreen)();
-            }, 1000);
-          }
-        }
-      });
-    });
-  }, 5000);
-};
-
-/***/ }),
-
-/***/ "./js/utils.js":
-/*!*********************!*\
-  !*** ./js/utils.js ***!
-  \*********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "createIconsArray": () => (/* binding */ createIconsArray),
-/* harmony export */   "createLostScreen": () => (/* binding */ createLostScreen),
-/* harmony export */   "createWinScreen": () => (/* binding */ createWinScreen),
-/* harmony export */   "doubleArray": () => (/* binding */ doubleArray),
-/* harmony export */   "shuffleArray": () => (/* binding */ shuffleArray)
-/* harmony export */ });
-var doubleArray = function doubleArray(array) {
-  return array.reduce(function (res, current) {
-    return res.concat([current, current]);
-  }, []);
-};
-var shuffleArray = function shuffleArray(array) {
-  var currentIndex = array.length,
-    randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    var _ref = [array[randomIndex], array[currentIndex]];
-    array[currentIndex] = _ref[0];
-    array[randomIndex] = _ref[1];
-  }
-  return array;
-};
-var createLostScreen = function createLostScreen() {
-  var container = document.querySelector(".container");
-  var sad = document.createElement("img");
-  sad.classList.add("sadImg");
-  sad.setAttribute("src", "./static/sadImage.png");
-  var title = document.createElement("h2");
-  title.textContent = "Вы проиграли";
-  title.classList.add("game-lose-title");
-  var restartBtn = document.querySelector(".restart-btn");
-  var loseScreen = document.createElement("div");
-  loseScreen.classList.add("lose-screen");
-  var subtitle = document.createElement("h3");
-  subtitle.textContent = "Затраченное время:";
-  subtitle.classList.add("game-resulsts");
-  var time = document.querySelector(".timer");
-  loseScreen.append(sad, title, subtitle, time, restartBtn);
-  container.append(loseScreen);
-};
-var createWinScreen = function createWinScreen() {
-  var container = document.querySelector(".container");
-  var sad = document.createElement("img");
-  sad.classList.add("winImg");
-  sad.setAttribute("src", "./static/winImage.png");
-  var title = document.createElement("h2");
-  title.textContent = "Вы выиграли";
-  title.classList.add("game-lose-title");
-  var restartBtn = document.querySelector(".restart-btn");
-  var loseScreen = document.createElement("div");
-  loseScreen.classList.add("lose-screen");
-  var subtitle = document.createElement("h3");
-  subtitle.textContent = "Затраченное время:";
-  subtitle.classList.add("game-resulsts");
-  var time = document.querySelector(".timer");
-  loseScreen.append(sad, title, subtitle, time, restartBtn);
-  container.append(loseScreen);
-};
-
-//Получаем массив вдресов для отрисовки игральных карт
-var cardsIcons = [];
-var HOST = "https://deckofcardsapi.com/api/deck/new/shuffle/?";
-// eslint-disable-next-line no-undef
-request({
-  url: "".concat(HOST),
-  params: {
-    deckCount: 1
-  },
-  onSuccess: function e(response) {
-    //получаем id колоды карт
-
-    var deckId = response.deck_id;
-    var deck = "https://deckofcardsapi.com/api/deck/".concat(deckId);
-
-    // eslint-disable-next-line no-undef
-    request({
-      // получаем карты из колоды для отрисовки
-      url: "".concat(deck, "/draw/?count=52"),
-      params: {},
-      onSuccess: function onSuccess(response) {
-        var getCodes = function getCodes(code) {
-          return response.cards.map(function (card) {
-            return card[code];
-          });
-        };
-        getCodes("image").forEach(function (i) {
-          cardsIcons.push(i);
-        });
-      }
-    });
-  }
-});
-
-//выбираем массив карт, количество карт в котором зависит от выбранного уровня сложности
-var createIconsArray = function createIconsArray(initialCount) {
-  //debugger
-
-  switch (initialCount) {
-    case 6:
-      return cardsIcons.slice(0, 3);
-    case 9:
-      return cardsIcons.slice(0, 6);
-    case 12:
-      return cardsIcons.slice(0, 9);
-    default:
-      break;
-  }
-};
-
-/***/ }),
-
 /***/ "./node_modules/core-js/es6/index.js":
 /*!*******************************************!*\
   !*** ./node_modules/core-js/es6/index.js ***!
@@ -10228,6 +9865,345 @@ try {
 }
 
 
+/***/ }),
+
+/***/ "./js/card.ts":
+/*!********************!*\
+  !*** ./js/card.ts ***!
+  \********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createCard": () => (/* binding */ createCard),
+/* harmony export */   "createFlippedCard": () => (/* binding */ createFlippedCard)
+/* harmony export */ });
+//создаем карты для демонстрации в начале игры
+const createFlippedCard = (flipCardIcon) => {
+    const card = document.createElement("img");
+    card.setAttribute("src", `${flipCardIcon}`);
+    card.classList.add("game-card", "flip");
+    const flippedCardI = document.createElement("i");
+    flippedCardI.classList.add("img", `img-${flipCardIcon}`);
+    card.append(flippedCardI);
+    return card;
+};
+//создаем карты для игры
+const createCard = (defaultIcon, flipCardIcon) => {
+    const card = document.createElement("div");
+    card.classList.add("game-card");
+    card.setAttribute("value", `${flipCardIcon}`.slice(-6, -4));
+    const flippedCardI = document.createElement("img");
+    const notFlippedCardI = document.createElement("img");
+    flippedCardI.classList.add("img");
+    notFlippedCardI.classList.add("img", "icon");
+    flippedCardI.setAttribute("src", `${flipCardIcon}`);
+    notFlippedCardI.setAttribute("src", `${defaultIcon}`);
+    card.append(flippedCardI, notFlippedCardI);
+    return card;
+};
+
+
+/***/ }),
+
+/***/ "./js/game_menu.ts":
+/*!*************************!*\
+  !*** ./js/game_menu.ts ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createGameMenu": () => (/* binding */ createGameMenu)
+/* harmony export */ });
+/* harmony import */ var _start_game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./start_game */ "./js/start_game.ts");
+
+const createGameMenu = () => {
+    const gameSection = document.querySelector(".game-section-container");
+    gameSection.innerHTML = "";
+    const title = document.createElement("h2");
+    title.textContent = "Выбери сложность";
+    title.classList.add("game-menu-title");
+    const dificultRadioButtons = document.createElement("div");
+    dificultRadioButtons.classList.add("level-box");
+    const data = {
+        1: false,
+        2: false,
+        3: false
+    };
+    //создаем радиокнопки сложности
+    for (let i in data) {
+        let label = document.createElement("label");
+        label.classList.add("label");
+        label.innerText = i;
+        let input = document.createElement("input");
+        input.classList.add("input");
+        input.type = "radio";
+        input.name = "difficult";
+        label.appendChild(input);
+        dificultRadioButtons.appendChild(label);
+    }
+    const button = document.createElement("button");
+    button.classList.add("game-menu-start-btn");
+    button.textContent = `start`;
+    dificultRadioButtons.appendChild(title);
+    dificultRadioButtons.appendChild(button);
+    gameSection.append(dificultRadioButtons);
+    // запускаем игровое поле
+    button.addEventListener("click", function (e) {
+        const checked = document.querySelectorAll(".input");
+        if (checked[0].checked) {
+            (0,_start_game__WEBPACK_IMPORTED_MODULE_0__.startGame)(6);
+        }
+        if (checked[1].checked) {
+            (0,_start_game__WEBPACK_IMPORTED_MODULE_0__.startGame)(9);
+        }
+        if (checked[2].checked) {
+            (0,_start_game__WEBPACK_IMPORTED_MODULE_0__.startGame)(12);
+        }
+        else {
+            e.preventDefault();
+        }
+    });
+};
+
+
+/***/ }),
+
+/***/ "./js/start_game.ts":
+/*!**************************!*\
+  !*** ./js/start_game.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "startGame": () => (/* binding */ startGame)
+/* harmony export */ });
+/* harmony import */ var _card__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./card */ "./js/card.ts");
+/* harmony import */ var _game_menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./game_menu */ "./js/game_menu.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./js/utils.ts");
+
+
+
+const startGame = (difficult) => {
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let interval;
+    const gameSection = document.querySelector(".game-section-container");
+    const gameTable = document.createElement("div");
+    gameTable.style.gridTemplateColumns = `repeat(6,auto)`;
+    const timeBox = document.createElement("div");
+    timeBox.classList.add("time-box");
+    const timer = document.createElement("div");
+    timer.classList.add("timer");
+    const cardsIcons = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.createIconsArray)(difficult);
+    const restartBtn = document.createElement("button");
+    const doubleCardsIcons = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.doubleArray)(cardsIcons);
+    gameSection.innerHTML = "";
+    restartBtn.textContent = "Restart";
+    gameTable.classList.add("game-table");
+    restartBtn.classList.add("restart-btn");
+    (0,_utils__WEBPACK_IMPORTED_MODULE_2__.shuffleArray)(doubleCardsIcons);
+    //инициация таймера
+    let seconds = 0, minutes = 0;
+    //для таймера
+    const timeGenerator = () => {
+        seconds += 1;
+        //минуты
+        if (seconds >= 60) {
+            minutes += 1;
+            seconds = 0;
+        }
+        //формат времени перед показом
+        let secondsValue = seconds < 10 ? `0${seconds}` : seconds;
+        let minutesValue = minutes < 10 ? `0${minutes}` : minutes;
+        timer.innerHTML = `<span>min:</span>${minutesValue}<span>sec:</span>${secondsValue}`;
+    };
+    function resetBoard() {
+        let [tempFirst, tempSecond] = [firstCard, secondCard];
+        [firstCard, secondCard] = [null, null];
+        lockBoard = true;
+        clearInterval(interval);
+        setTimeout(() => {
+            tempFirst.classList.remove("flip");
+            tempSecond.classList.remove("flip");
+            setTimeout(() => {
+                (0,_utils__WEBPACK_IMPORTED_MODULE_2__.createLostScreen)();
+            }, 500);
+        }, 900);
+    }
+    // Показываем перевернутые карты на 5сек
+    doubleCardsIcons.forEach((icon) => gameTable.append((0,_card__WEBPACK_IMPORTED_MODULE_0__.createFlippedCard)(icon)));
+    gameSection.append(timeBox, gameTable);
+    // Очищаем поле и заполняем картами, рубашками вверх
+    setTimeout(() => {
+        gameTable.innerHTML = "";
+        //Запускаем таймер
+        seconds = 0;
+        minutes = 0;
+        interval = setInterval(timeGenerator, 1000);
+        timeBox.append(timer, restartBtn);
+        doubleCardsIcons.forEach((icon) => gameTable.append((0,_card__WEBPACK_IMPORTED_MODULE_0__.createCard)("./static/Mask group.jpg", icon)));
+        gameSection.append(gameTable);
+        restartBtn.addEventListener("click", _game_menu__WEBPACK_IMPORTED_MODULE_1__.createGameMenu);
+        const cards = document.querySelectorAll(".game-card");
+        let firstCardValue;
+        // Создаем переворачивание карт
+        cards.forEach((card) => {
+            card.addEventListener("click", () => {
+                //Защита от двойного клика
+                if (lockBoard)
+                    return;
+                if (card === firstCard)
+                    return;
+                // проверка карт на совпадение
+                if (!card.classList.contains("matched")) {
+                    card.classList.add("flip");
+                    if (!firstCard) {
+                        firstCard = card;
+                        firstCardValue = card.getAttribute("value");
+                        console.log(firstCardValue);
+                    }
+                    else {
+                        secondCard = card;
+                        let secondCardValue = card.getAttribute("value");
+                        if (firstCardValue === secondCardValue) {
+                            firstCard.classList.add("matched");
+                            secondCard.classList.add("matched");
+                            firstCard = null;
+                        }
+                        else {
+                            // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
+                            resetBoard();
+                        }
+                    }
+                    if (Array.from(cards).every((card) => card.className.includes("flip"))) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            (0,_utils__WEBPACK_IMPORTED_MODULE_2__.createWinScreen)();
+                        }, 1000);
+                    }
+                }
+            });
+        });
+    }, 5000);
+};
+
+
+/***/ }),
+
+/***/ "./js/utils.ts":
+/*!*********************!*\
+  !*** ./js/utils.ts ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createIconsArray": () => (/* binding */ createIconsArray),
+/* harmony export */   "createLostScreen": () => (/* binding */ createLostScreen),
+/* harmony export */   "createWinScreen": () => (/* binding */ createWinScreen),
+/* harmony export */   "doubleArray": () => (/* binding */ doubleArray),
+/* harmony export */   "shuffleArray": () => (/* binding */ shuffleArray)
+/* harmony export */ });
+const doubleArray = (array) => array.reduce((res, current) => res.concat([current, current]), []);
+const shuffleArray = (array) => {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex],
+            array[currentIndex]
+        ];
+    }
+    return array;
+};
+const createLostScreen = () => {
+    const container = document.querySelector(".container");
+    const sad = document.createElement("img");
+    sad.classList.add("sadImg");
+    sad.setAttribute("src", "./static/sadImage.png");
+    const title = document.createElement("h2");
+    title.textContent = "Вы проиграли";
+    title.classList.add("game-lose-title");
+    const restartBtn = document.querySelector(".restart-btn");
+    const loseScreen = document.createElement("div");
+    loseScreen.classList.add("lose-screen");
+    const subtitle = document.createElement("h3");
+    subtitle.textContent = "Затраченное время:";
+    subtitle.classList.add("game-resulsts");
+    const time = document.querySelector(".timer");
+    loseScreen.append(sad, title, subtitle, time, restartBtn);
+    container.append(loseScreen);
+};
+const createWinScreen = () => {
+    const container = document.querySelector(".container");
+    const sad = document.createElement("img");
+    sad.classList.add("winImg");
+    sad.setAttribute("src", "./static/winImage.png");
+    const title = document.createElement("h2");
+    title.textContent = "Вы выиграли";
+    title.classList.add("game-lose-title");
+    const restartBtn = document.querySelector(".restart-btn");
+    const loseScreen = document.createElement("div");
+    loseScreen.classList.add("lose-screen");
+    const subtitle = document.createElement("h3");
+    subtitle.textContent = "Затраченное время:";
+    subtitle.classList.add("game-resulsts");
+    const time = document.querySelector(".timer");
+    loseScreen.append(sad, title, subtitle, time, restartBtn);
+    container.append(loseScreen);
+};
+//Получаем массив вдресов для отрисовки игральных карт
+const cardsIcons = [];
+const HOST = `https://deckofcardsapi.com/api/deck/new/shuffle/?`;
+// eslint-disable-next-line no-undef
+request({
+    url: `${HOST}`,
+    params: {
+        deckCount: 1
+    },
+    onSuccess: function e(response) {
+        //получаем id колоды карт
+        const deckId = response.deck_id;
+        let deck = `https://deckofcardsapi.com/api/deck/${deckId}`;
+        // eslint-disable-next-line no-undef
+        request({
+            // получаем карты из колоды для отрисовки
+            url: `${deck}/draw/?count=52`,
+            params: {},
+            onSuccess: (response) => {
+                const getCodes = (code) => response.cards.map((card) => card[code]);
+                getCodes("image").forEach((i) => {
+                    cardsIcons.push(i);
+                });
+            }
+        });
+    }
+});
+//выбираем массив карт, количество карт в котором зависит от выбранного уровня сложности
+const createIconsArray = (initialCount) => {
+    //debugger
+    switch (initialCount) {
+        case 6:
+            return cardsIcons.slice(0, 3);
+        case 9:
+            return cardsIcons.slice(0, 6);
+        case 12:
+            return cardsIcons.slice(0, 9);
+        default:
+            break;
+    }
+};
+
+
 /***/ })
 
 /******/ 	});
@@ -10312,15 +10288,16 @@ _global["default"]._babelPolyfill = true;
 (() => {
 "use strict";
 /*!*********************!*\
-  !*** ./js/index.js ***!
+  !*** ./js/index.ts ***!
   \*********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _game_menu_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game_menu.js */ "./js/game_menu.js");
+/* harmony import */ var _game_menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game_menu */ "./js/game_menu.ts");
 
-var cardsApp = function cardsApp() {
-  (0,_game_menu_js__WEBPACK_IMPORTED_MODULE_0__.createGameMenu)();
+const cardsApp = () => {
+    (0,_game_menu__WEBPACK_IMPORTED_MODULE_0__.createGameMenu)();
 };
 cardsApp();
+
 })();
 
 /******/ })()

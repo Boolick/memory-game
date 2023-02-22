@@ -1,5 +1,5 @@
-import { createCard, createFlippedCard } from "./card.js";
-import { createGameMenu } from "./game_menu.js";
+import { createCard, createFlippedCard } from "./card";
+import { createGameMenu } from "./game_menu";
 
 import {
     createIconsArray,
@@ -7,15 +7,17 @@ import {
     shuffleArray,
     createLostScreen,
     createWinScreen
-} from "./utils.js";
+} from "./utils";
 
-export const startGame = (difficult) => {
-    let firstCard = false;
-    let secondCard = false;
+export const startGame = (difficult: number) => {
+    let firstCard: Element | null = null;
+    let secondCard: Element | null = null;
     let lockBoard = false;
-    let interval;
+    let interval: string | number | NodeJS.Timeout | undefined;
 
-    const gameSection = document.querySelector(".game-section-container");
+    const gameSection = document.querySelector(
+        ".game-section-container"
+    ) as HTMLElement;
     const gameTable = document.createElement("div");
     gameTable.style.gridTemplateColumns = `repeat(6,auto)`;
 
@@ -56,8 +58,8 @@ export const startGame = (difficult) => {
     };
 
     function resetBoard() {
-        let [tempFirst, tempSecond] = [firstCard, secondCard];
-        [firstCard, secondCard] = [false, false];
+        let [tempFirst, tempSecond]: any = [firstCard, secondCard];
+        [firstCard, secondCard] = [null, null];
         lockBoard = true;
         clearInterval(interval);
         setTimeout(() => {
@@ -70,12 +72,10 @@ export const startGame = (difficult) => {
     }
 
     // Показываем перевернутые карты на 5сек
-    doubleCardsIcons.forEach((icon) =>
+    doubleCardsIcons.forEach((icon: any) =>
         gameTable.append(createFlippedCard(icon))
     );
     gameSection.append(timeBox, gameTable);
-    console.log(doubleCardsIcons);
-    console.log(doubleCardsIcons.length);
 
     // Очищаем поле и заполняем картами, рубашками вверх
     setTimeout(() => {
@@ -88,7 +88,7 @@ export const startGame = (difficult) => {
 
         timeBox.append(timer, restartBtn);
 
-        doubleCardsIcons.forEach((icon) =>
+        doubleCardsIcons.forEach((icon: any) =>
             gameTable.append(createCard("./static/Mask group.jpg", icon))
         );
         gameSection.append(gameTable);
@@ -97,7 +97,7 @@ export const startGame = (difficult) => {
 
         const cards = document.querySelectorAll(".game-card");
 
-        let firstCardValue;
+        let firstCardValue: string | null;
         // Создаем переворачивание карт
         cards.forEach((card) => {
             card.addEventListener("click", () => {
@@ -120,7 +120,7 @@ export const startGame = (difficult) => {
                         if (firstCardValue === secondCardValue) {
                             firstCard.classList.add("matched");
                             secondCard.classList.add("matched");
-                            firstCard = false;
+                            firstCard = null;
                         } else {
                             // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
                             resetBoard();

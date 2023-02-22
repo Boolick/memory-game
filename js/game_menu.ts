@@ -1,7 +1,9 @@
-import { startGame } from "./start_game.js";
+import { startGame } from "./start_game";
 
 export const createGameMenu = () => {
-    const gameSection = document.querySelector(".game-section-container");
+    const gameSection = document.querySelector(
+        ".game-section-container"
+    ) as HTMLElement;
     gameSection.innerHTML = "";
 
     const title = document.createElement("h2");
@@ -34,13 +36,10 @@ export const createGameMenu = () => {
     dificultRadioButtons.appendChild(button);
     gameSection.append(dificultRadioButtons);
 
-    const canvas = document.getElementsByTagName("canvas");
-    canvas.innerHTML = "";
-
     // запускаем игровое поле
     button.addEventListener("click", function (e) {
-        const checked = document.querySelectorAll(".input");
-        console.log(checked);
+        const checked: any = document.querySelectorAll(".input");
+       
         if (checked[0].checked) {
             startGame(6);
         }
