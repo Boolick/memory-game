@@ -10,8 +10,8 @@ import {
 } from "./utils";
 
 export const startGame = (difficult: number) => {
-    let firstCard: Element | null = null;
-    let secondCard: Element | null = null;
+    let firstCard: any;
+    let secondCard: Element | boolean;
     let lockBoard = false;
     let interval: string | number | NodeJS.Timeout | undefined;
 
@@ -23,13 +23,12 @@ export const startGame = (difficult: number) => {
 
     const timeBox = document.createElement("div");
     timeBox.classList.add("time-box");
-
     const timer = document.createElement("div");
     timer.classList.add("timer");
 
-    const cardsIcons = createIconsArray(difficult);
-    const restartBtn = document.createElement("button");
+    const cardsIcons: any = createIconsArray(difficult);
 
+    const restartBtn = document.createElement("button");
     const doubleCardsIcons = doubleArray(cardsIcons);
 
     gameSection.innerHTML = "";
@@ -58,8 +57,9 @@ export const startGame = (difficult: number) => {
     };
 
     function resetBoard() {
-        let [tempFirst, tempSecond]: any = [firstCard, secondCard];
-        [firstCard, secondCard] = [null, null];
+        let [tempFirst, tempSecond]: Array<Element> = [firstCard, secondCard];
+        [firstCard, secondCard] = [false, false];
+        console.log(typeof tempFirst);
         lockBoard = true;
         clearInterval(interval);
         setTimeout(() => {
@@ -72,7 +72,7 @@ export const startGame = (difficult: number) => {
     }
 
     // Показываем перевернутые карты на 5сек
-    doubleCardsIcons.forEach((icon: any) =>
+    doubleCardsIcons.forEach((icon) =>
         gameTable.append(createFlippedCard(icon))
     );
     gameSection.append(timeBox, gameTable);
@@ -88,9 +88,10 @@ export const startGame = (difficult: number) => {
 
         timeBox.append(timer, restartBtn);
 
-        doubleCardsIcons.forEach((icon: any) =>
+        doubleCardsIcons.forEach((icon: string) =>
             gameTable.append(createCard("./static/Mask group.jpg", icon))
         );
+
         gameSection.append(gameTable);
 
         restartBtn.addEventListener("click", createGameMenu);
@@ -120,7 +121,7 @@ export const startGame = (difficult: number) => {
                         if (firstCardValue === secondCardValue) {
                             firstCard.classList.add("matched");
                             secondCard.classList.add("matched");
-                            firstCard = null;
+                            firstCard = false;
                         } else {
                             // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
                             resetBoard();

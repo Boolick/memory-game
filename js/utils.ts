@@ -1,12 +1,10 @@
-
-
-export const doubleArray = (array: any) =>
+export const doubleArray = (array: string[]) =>
     array.reduce(
-        (res: any[], current: any) => res.concat([current, current]),
+        (res: string[], current: string) => res.concat([current, current]),
         []
     );
 
-export const shuffleArray = (array: any[]) => {
+export const shuffleArray = (array: string[]) => {
     let currentIndex = array.length,
         randomIndex;
 
@@ -71,7 +69,7 @@ export const createWinScreen = () => {
 };
 
 //Получаем массив вдресов для отрисовки игральных карт
-const cardsIcons: any[] = [];
+const cardsIcons: string[] = [];
 const HOST = `https://deckofcardsapi.com/api/deck/new/shuffle/?`;
 // eslint-disable-next-line no-undef
 request({
@@ -80,11 +78,9 @@ request({
         deckCount: 1
     },
 
-    onSuccess: function e(response: { deck_id: any }) {
+    onSuccess: function e(response: { deck_id: string }) {
         //получаем id колоды карт
-
         const deckId = response.deck_id;
-
         let deck = `https://deckofcardsapi.com/api/deck/${deckId}`;
 
         // eslint-disable-next-line no-undef
@@ -93,13 +89,14 @@ request({
             url: `${deck}/draw/?count=52`,
             params: {},
 
-            onSuccess: (response: { cards: any[] }) => {
-                const getCodes = (code: string) =>
-                    response.cards.map((card) => card[code]);
-
-                getCodes("image").forEach((i) => {
+            onSuccess: (response: { cards: Array<object> }) => {
+                const getCodes = (code: string): string[] =>
+                    response.cards.map((card: any) => card[code]);
+                console.log(typeof response.cards);
+                getCodes("image").forEach((i: string) => {
                     cardsIcons.push(i);
                 });
+                return cardsIcons;
             }
         });
     }

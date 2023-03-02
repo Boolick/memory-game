@@ -1,5 +1,5 @@
 //создаем карты для демонстрации в начале игры
-export const createFlippedCard = (flipCardIcon: any) => {
+export const createFlippedCard = (flipCardIcon: string) => {
     const card = document.createElement("img");
     card.setAttribute("src", `${flipCardIcon}`);
     card.classList.add("game-card", "flip");
@@ -11,7 +11,7 @@ export const createFlippedCard = (flipCardIcon: any) => {
     return card;
 };
 //создаем карты для игры
-export const createCard = (defaultIcon: string, flipCardIcon: any) => {
+export const createCard = (defaultIcon: string, flipCardIcon: string) => {
     const card = document.createElement("div");
     card.classList.add("game-card");
     card.setAttribute("value", `${flipCardIcon}`.slice(-6, -4));

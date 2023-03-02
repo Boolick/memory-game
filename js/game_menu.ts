@@ -38,8 +38,9 @@ export const createGameMenu = () => {
 
     // запускаем игровое поле
     button.addEventListener("click", function (e) {
-        const checked: any = document.querySelectorAll(".input");
-       
+        const checked: NodeListOf<HTMLInputElement> =
+            document.querySelectorAll(".input");
+        
         if (checked[0].checked) {
             startGame(6);
         }
