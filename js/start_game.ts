@@ -10,8 +10,8 @@ import {
 } from "./utils";
 
 export const startGame = (difficult: number) => {
-    let firstCard: any;
-    let secondCard: Element | boolean;
+    let firstCard: Element | null;
+    let secondCard: Element | null;
     let lockBoard = false;
     let interval: string | number | NodeJS.Timeout | undefined;
 
@@ -26,7 +26,7 @@ export const startGame = (difficult: number) => {
     const timer = document.createElement("div");
     timer.classList.add("timer");
 
-    const cardsIcons: any = createIconsArray(difficult);
+    const cardsIcons = createIconsArray(difficult);
 
     const restartBtn = document.createElement("button");
     const doubleCardsIcons = doubleArray(cardsIcons);
@@ -57,18 +57,26 @@ export const startGame = (difficult: number) => {
     };
 
     function resetBoard() {
-        let [tempFirst, tempSecond]: Array<Element> = [firstCard, secondCard];
-        [firstCard, secondCard] = [false, false];
-        console.log(typeof tempFirst);
-        lockBoard = true;
-        clearInterval(interval);
-        setTimeout(() => {
-            tempFirst.classList.remove("flip");
-            tempSecond.classList.remove("flip");
-            setTimeout(() => {
-                createLostScreen();
-            }, 500);
-        }, 900);
+        if (secondCard) {
+            if (firstCard) {
+                let [tempFirst, tempSecond]: Array<Element> = [
+                    firstCard,
+                    secondCard
+                ];
+                [firstCard, secondCard] = [null, null];
+                console.log(typeof tempFirst);
+                console.log(typeof tempSecond);
+                lockBoard = true;
+                clearInterval(interval);
+                setTimeout(() => {
+                    tempFirst.classList.remove("flip");
+                    tempSecond.classList.remove("flip");
+                    setTimeout(() => {
+                        createLostScreen();
+                    }, 500);
+                }, 900);
+            }
+        }
     }
 
     // Показываем перевернутые карты на 5сек
@@ -121,7 +129,7 @@ export const startGame = (difficult: number) => {
                         if (firstCardValue === secondCardValue) {
                             firstCard.classList.add("matched");
                             secondCard.classList.add("matched");
-                            firstCard = false;
+                            firstCard = null;
                         } else {
                             // Больше двух карт не развернешь, тут должно быть сообщение о проигрыше
                             resetBoard();

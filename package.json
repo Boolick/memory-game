@@ -2,6 +2,8 @@
     "devDependencies": {
         "@babel/core": "^7.20.12",
         "@babel/preset-env": "^7.20.2",
+        "@types/jest": "^29.4.0",
+        "@types/node": "^18.14.6",
         "@typescript-eslint/eslint-plugin": "^5.49.0",
         "@typescript-eslint/parser": "^5.49.0",
         "babel-loader": "^9.1.2",

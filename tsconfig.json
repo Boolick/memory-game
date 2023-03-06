@@ -2,10 +2,12 @@
     "compilerOptions": {
         "strict": true,
         "module": "ES6",
-        "target": "ES6",
+        "target": "ES5",
         "noImplicitAny": true,
         "outDir": "./dist/",
-        "allowJs": true,
+        "lib": ["dom", "es5", "scripthost"],
+        "types": ["node"],
+
         "moduleResolution": "node",
         "sourceMap": true
     },

@@ -72,6 +72,7 @@ export const createWinScreen = () => {
 const cardsIcons: string[] = [];
 const HOST = `https://deckofcardsapi.com/api/deck/new/shuffle/?`;
 // eslint-disable-next-line no-undef
+
 request({
     url: `${HOST}`,
     params: {
@@ -89,9 +90,9 @@ request({
             url: `${deck}/draw/?count=52`,
             params: {},
 
-            onSuccess: (response: { cards: Array<object> }) => {
-                const getCodes = (code: string): string[] =>
-                    response.cards.map((card: any) => card[code]);
+            onSuccess: (response: { cards: Array<{ image: string }> }) => {
+                const getCodes = (code: "image"): string[] =>
+                    response.cards.map((card) => card[code]);
                 console.log(typeof response.cards);
                 getCodes("image").forEach((i: string) => {
                     cardsIcons.push(i);
@@ -103,7 +104,7 @@ request({
 });
 
 //выбираем массив карт, количество карт в котором зависит от выбранного уровня сложности
-export const createIconsArray = (initialCount: number) => {
+export const createIconsArray = (initialCount: number): string[] => {
     //debugger
 
     switch (initialCount) {
@@ -114,6 +115,6 @@ export const createIconsArray = (initialCount: number) => {
         case 12:
             return cardsIcons.slice(0, 9);
         default:
-            break;
+            throw new Error("Не верное значение initialCount");
     }
 };
